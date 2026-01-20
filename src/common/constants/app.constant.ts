@@ -1,0 +1,33 @@
+export const APP_CONSTANTS = {
+  PAGINATION: {
+    DEFAULT_PAGE: 1,
+    DEFAULT_LIMIT: 10,
+    MAX_LIMIT: 100,
+  },
+  
+  JWT: {
+    STRATEGY: 'jwt',
+  },
+  
+  BCRYPT: {
+    SALT_ROUNDS: 10,
+  },
+    ROLES: {
+    USER: 'USER',
+    ADMIN: 'ADMIN',
+  },
+  
+  SKILL_STATUS: {
+    ACTIVE: 'ACTIVE',
+    COMPLETED: 'COMPLETED',
+    DELETED: 'DELETED',
+  },
+  
+  REQUEST_STATUS: {
+    PENDING: 'PENDING',
+    ACCEPTED: 'ACCEPTED',
+    REJECTED: 'REJECTED',
+    COMPLETED: 'COMPLETED',
+    CANCELLED: 'CANCELLED',
+  },
+};
