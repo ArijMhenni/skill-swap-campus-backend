@@ -1,16 +1,37 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
+import { setupSwagger } from './config/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
-  // Enable CORS for frontend
+  const configService = app.get(ConfigService);
+
+  // Enable CORS
   app.enableCors({
-    origin: 'http://localhost:4200',
+    origin: configService.get('CORS_ORIGIN') || 'http://localhost:4200',
     credentials: true,
   });
-  
-  await app.listen(process.env.PORT ?? 3000);
-  console.log(`Application is running on: http://localhost:${process.env.PORT ?? 3000}`);
+
+  // Global validation pipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  // Setup Swagger documentation
+  setupSwagger(app);
+
+  const port = configService.get('PORT') || 3000;
+  await app.listen(port);
+
+  console.log(`\n🚀 Application is running on: http://localhost:${port}`);
+  console.log(`📚 Swagger docs available at: http://localhost:${port}/api/docs`);
+  console.log(`🗄️  Database: ${configService.get('DB_DATABASE')} on ${configService.get('DB_HOST')}:${configService.get('DB_PORT')}`);
+  console.log(`🌍 CORS enabled for: ${configService.get('CORS_ORIGIN')}\n`);
 }
 bootstrap();

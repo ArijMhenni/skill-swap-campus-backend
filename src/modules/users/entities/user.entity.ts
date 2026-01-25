@@ -34,11 +34,12 @@ export class User {
   })
   role: Role;
 
-  @Column('simple-array', { name: 'offered_skills', default: '' })
+  @Column('simple-array', { name: 'offered_skills', nullable: true })
   offeredSkills: string[];
 
-  @Column('simple-array', { name: 'wanted_skills', default: '' })
+  @Column('simple-array', { name: 'wanted_skills', nullable: true })
   wantedSkills: string[];
+
 
   @Column({ type: 'text', nullable: true })
   availability: string;
