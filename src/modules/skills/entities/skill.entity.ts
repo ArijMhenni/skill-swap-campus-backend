@@ -10,7 +10,6 @@ import { SkillCategory } from '../../../common/enums/skill-category.enum';
 import { SkillType } from '../../../common/enums/skill-type.enum';
 import { SkillStatus } from '../../../common/enums/skill-status.enum';
 import { User } from '../../users/entities/user.entity';
-
 @Entity('skills')
 export class Skill {
   @PrimaryGeneratedColumn('uuid')
