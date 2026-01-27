@@ -19,9 +19,9 @@ import { RequestsService } from './requests.service';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 import { FilterRequestDto } from './dto/filter-request.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RequestAccessGuard } from './guards/request-access.guard';
-import { GetUser } from '../auth/decorators/get-user.decorator';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
 
 @ApiTags('Requests')
 @ApiBearerAuth()

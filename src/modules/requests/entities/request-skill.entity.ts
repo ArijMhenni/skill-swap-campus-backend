@@ -7,22 +7,31 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { RequestStatus } from '../../../common/enums/request-status.enum';
+import { RequestStatus } from '../../common/enums/request-status.enum';
 import { User } from '../../users/entities/user.entity';
 import { Skill } from '../../skills/entities/skill.entity';
 
 @Entity('requests')
-export class Request {
+export class SkillRequest {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column('uuid', { name: 'skill_id' })
+  skillId: string;
 
   @ManyToOne(() => Skill, { eager: true })
   @JoinColumn({ name: 'skill_id' })
   skill: Skill;
 
+  @Column('uuid', { name: 'requester_id' })
+  requesterId: string;
+
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'requester_id' })
   requester: User;
+
+  @Column('uuid', { name: 'provider_id' })
+  providerId: string;
 
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'provider_id' })

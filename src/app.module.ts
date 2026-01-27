@@ -5,7 +5,7 @@ import { getDatabaseConfig } from './config/database.config';
 import { UsersModule } from './modules/users/users.module';
 import { SkillsModule } from './modules/skills/skills.module';
 import { AuthModule } from './auth/auth.module';
-import { RequestsModule } from './requests/requests.module';
+import { RequestsModule } from './modules/requests/requests.module';
 
 @Module({
   imports: [

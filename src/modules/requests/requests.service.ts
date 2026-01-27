@@ -1,3 +1,4 @@
+// src/modules/requests/requests.service.ts
 import {
   Injectable,
   NotFoundException,
@@ -6,16 +7,17 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Request, RequestStatus } from './entities/request.entity';
+import { SkillRequest } from './entities/request-skill.entity';  // 
+import { RequestStatus } from '../../common/enums/request-status.enum';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { FilterRequestDto } from './dto/filter-request.dto';
-import { Skill } from '../modules/skills/entities/skill.entity';
+import { Skill } from '../skills/entities/skill.entity';
 
 @Injectable()
 export class RequestsService {
   constructor(
-    @InjectRepository(Request)
-    private readonly requestRepository: Repository<Request>,
+    @InjectRepository(SkillRequest)  
+    private readonly requestRepository: Repository<SkillRequest>,  // 
     @InjectRepository(Skill)
     private readonly skillRepository: Repository<Skill>,
   ) {}
@@ -23,8 +25,13 @@ export class RequestsService {
   async create(
     createRequestDto: CreateRequestDto,
     userId: string,
-  ): Promise<Request> {
+  ): Promise<SkillRequest> { 
     const { skillId, message } = createRequestDto;
+
+    console.log('==========================================');
+    console.log('📝 CREATE REQUEST');
+    console.log('skillId:', skillId);
+    console.log('userId (requester):', userId);
 
     // Vérifier que la skill existe
     const skill = await this.skillRepository.findOne({
@@ -32,12 +39,23 @@ export class RequestsService {
       relations: ['user'],
     });
 
+    console.log('Skill trouvée:', skill ? 'OUI' : 'NON');
+
     if (!skill) {
+      console.error('❌ Skill non trouvée');
       throw new NotFoundException('Compétence non trouvée');
     }
 
+    if (!skill.user) {
+      console.error('❌ Skill sans propriétaire');
+      throw new BadRequestException('Cette compétence n\'a pas de propriétaire');
+    }
+
+    console.log('Skill user id:', skill.user.id);
+
     // Vérifier qu'on ne demande pas sa propre skill
-    if (skill.id === userId) {
+    if (skill.user.id === userId) {
+      console.error('❌ Tentative de demander sa propre skill');
       throw new BadRequestException(
         'Vous ne pouvez pas demander votre propre compétence',
       );
@@ -46,13 +64,14 @@ export class RequestsService {
     // Vérifier qu'il n'existe pas déjà une demande en attente
     const existingRequest = await this.requestRepository.findOne({
       where: {
-        skillId,
+        skillId: skillId,
         requesterId: userId,
         status: RequestStatus.PENDING,
       },
     });
 
     if (existingRequest) {
+      console.error('❌ Demande en attente existe déjà');
       throw new BadRequestException(
         'Vous avez déjà une demande en attente pour cette compétence',
       );
@@ -60,20 +79,31 @@ export class RequestsService {
 
     // Créer la demande
     const request = this.requestRepository.create({
-      skillId,
+      skillId: skillId,
       requesterId: userId,
-      providerId: skill.id,
-      message,
+      providerId: skill.user.id,
+      message: message,
       status: RequestStatus.PENDING,
     });
 
-    return await this.requestRepository.save(request);
+    console.log('Request créée:', {
+      skillId: request.skillId,
+      requesterId: request.requesterId,
+      providerId: request.providerId,
+    });
+
+    const saved = await this.requestRepository.save(request);
+
+    console.log('✅ Request sauvegardée:', saved.id);
+    console.log('==========================================');
+
+    return saved;
   }
 
   async findMyRequests(
     userId: string,
     filters: FilterRequestDto,
-  ): Promise<Request[]> {
+  ): Promise<SkillRequest[]> {   
     const { status, role } = filters;
 
     const queryBuilder = this.requestRepository
@@ -85,13 +115,12 @@ export class RequestsService {
 
     // Filtrer par rôle
     if (role === 'asRequester') {
-      queryBuilder.where('request.requesterId = :userId', { userId });
+      queryBuilder.where('request.requester_id = :userId', { userId });
     } else if (role === 'asProvider') {
-      queryBuilder.where('request.providerId = :userId', { userId });
+      queryBuilder.where('request.provider_id = :userId', { userId });
     } else {
-      // Par défaut, afficher toutes les demandes de l'utilisateur
       queryBuilder.where(
-        '(request.requesterId = :userId OR request.providerId = :userId)',
+        '(request.requester_id = :userId OR request.provider_id = :userId)',
         { userId },
       );
     }
@@ -104,9 +133,9 @@ export class RequestsService {
     return await queryBuilder.getMany();
   }
 
-  async findOne(id: string, userId: string): Promise<Request> {
+  async findOne(id: string, userId: string): Promise<SkillRequest> {   
     const request = await this.requestRepository.findOne({
-      where: { id },
+      where: { id: id },
       relations: ['skill', 'requester', 'provider'],
     });
 
@@ -114,11 +143,8 @@ export class RequestsService {
       throw new NotFoundException('Demande non trouvée');
     }
 
-    // Vérifier que l'utilisateur a accès à cette demande
     if (request.requesterId !== userId && request.providerId !== userId) {
-      throw new ForbiddenException(
-        'Vous n\'avez pas accès à cette demande',
-      );
+      throw new ForbiddenException('Vous n\'avez pas accès à cette demande');
     }
 
     return request;
@@ -128,10 +154,9 @@ export class RequestsService {
     id: string,
     userId: string,
     newStatus: RequestStatus,
-  ): Promise<Request> {
+  ): Promise<SkillRequest> {  // 
     const request = await this.findOne(id, userId);
 
-    // Validation des transitions de statut
     this.validateStatusTransition(request, userId, newStatus);
 
     request.status = newStatus;
@@ -139,7 +164,7 @@ export class RequestsService {
   }
 
   private validateStatusTransition(
-    request: Request,
+    request: SkillRequest,  // 
     userId: string,
     newStatus: RequestStatus,
   ): void {
@@ -147,10 +172,10 @@ export class RequestsService {
     const isRequester = request.requesterId === userId;
     const isProvider = request.providerId === userId;
 
-    // PENDING → ACCEPTED/REJECTED (par provider uniquement)
     if (
       currentStatus === RequestStatus.PENDING &&
-      (newStatus === RequestStatus.ACCEPTED || newStatus === RequestStatus.REJECTED)
+      (newStatus === RequestStatus.ACCEPTED ||
+        newStatus === RequestStatus.REJECTED)
     ) {
       if (!isProvider) {
         throw new ForbiddenException(
@@ -160,7 +185,6 @@ export class RequestsService {
       return;
     }
 
-    // PENDING → CANCELLED (par requester uniquement)
     if (
       currentStatus === RequestStatus.PENDING &&
       newStatus === RequestStatus.CANCELLED
@@ -173,7 +197,6 @@ export class RequestsService {
       return;
     }
 
-    // ACCEPTED → COMPLETED (par les deux)
     if (
       currentStatus === RequestStatus.ACCEPTED &&
       newStatus === RequestStatus.COMPLETED
@@ -186,7 +209,6 @@ export class RequestsService {
       return;
     }
 
-    // Transition invalide
     throw new BadRequestException(
       `Transition de statut invalide : ${currentStatus} → ${newStatus}`,
     );

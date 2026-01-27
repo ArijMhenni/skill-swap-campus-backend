@@ -8,16 +8,16 @@ import {
   OneToOne,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { Request } from '../../requests/entities/request.entity';
+import { SkillRequest } from '../../requests/entities/request-skill.entity';
 
 @Entity('ratings')
 export class Rating {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => Request)
+  @OneToOne(() => SkillRequest)
   @JoinColumn({ name: 'request_id' })
-  request: Request;
+  request: SkillRequest;
 
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'rater_id' })

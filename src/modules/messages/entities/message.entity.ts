@@ -7,14 +7,14 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { Request } from '../../requests/entities/request.entity';
+import { SkillRequest } from '../../requests/entities/request-skill.entity';
 
 @Entity('messages')
 export class Message {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Request)
+  @ManyToOne(() => SkillRequest)
   @JoinColumn({ name: 'request_id' })
   request: Request;
 
