@@ -42,6 +42,14 @@ export class UsersController {
     @GetUser() user: User,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
+    // 🐛 Debug log
+    console.log('📥 PATCH /users/me - Received data:', {
+      ...updateProfileDto,
+      avatar: updateProfileDto.avatar 
+        ? (updateProfileDto.avatar === null ? 'NULL' : 'BASE64 STRING') 
+        : 'UNDEFINED'
+    });
+    
     return this.usersService.updateProfile(user.id, updateProfileDto);
   }
 

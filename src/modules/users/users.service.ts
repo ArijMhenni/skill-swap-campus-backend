@@ -25,7 +25,14 @@ export class UsersService {
     const user = await this.findById(id);
 
     Object.assign(user, updateProfileDto);
+    if ('avatar' in updateProfileDto) {
+        user.avatar = updateProfileDto.avatar || null;
+        console.log('🔄 Avatar update - Setting to:', user.avatar === null ? 'NULL' : 'BASE64 STRING');
+    }
 
-    return this.userRepository.save(user);
-  }
+    const savedUser = await this.userRepository.save(user);
+    console.log('✅ User saved - Avatar is:', savedUser.avatar === null ? 'NULL' : 'SET');
+    
+    return savedUser;
+    }
 }
