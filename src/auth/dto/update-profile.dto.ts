@@ -17,6 +17,9 @@ export class UpdateProfileDto {
   @IsOptional()
   availability?: string;
 
+  @IsOptional()
+  avatar?: string | null ;
+
   @ApiPropertyOptional({ example: ['JavaScript', 'React'] })
   @IsArray()
   @IsOptional()

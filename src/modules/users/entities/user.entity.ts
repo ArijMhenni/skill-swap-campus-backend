@@ -44,6 +44,9 @@ export class User {
   @Column({ type: 'text', nullable: true })
   availability: string;
 
+  @Column({ type: 'text', nullable: true })
+  avatar: string | null ;
+
   @Column({ name: 'is_banned', default: false })
   isBanned: boolean;
 
