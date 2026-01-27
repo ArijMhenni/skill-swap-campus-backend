@@ -8,23 +8,23 @@ import {
   Delete,
   Query,
   UseGuards,
-  Request,
 } from '@nestjs/common';
 import { SkillsService } from './skills.service';
 import { CreateSkillDto } from './dto/create-skill.dto';
 import { UpdateSkillDto } from './dto/update-skill.dto';
 import { FilterSkillDto } from './dto/filter-skill.dto';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../users/entities/user.entity';
 
 @Controller('skills')
 export class SkillsController {
   constructor(private readonly skillsService: SkillsService) {}
 
   @Post()
-  // @UseGuards(JwtAuthGuard) // À décommenter quand l'authentification sera implémentée
-  create(@Body() createSkillDto: CreateSkillDto, @Request() req) {
-    // Temporairement, on peut passer un userId fixe pour tester
-    const userId = req.user?.id || 'temp-user-id';
-    return this.skillsService.create(createSkillDto, userId);
+  @UseGuards(JwtAuthGuard)
+  create(@Body() createSkillDto: CreateSkillDto, @GetUser() user: User) {
+    return this.skillsService.create(createSkillDto, user.id);
   }
 
   @Get()
@@ -43,20 +43,18 @@ export class SkillsController {
   }
 
   @Patch(':id')
-  // @UseGuards(JwtAuthGuard) // À décommenter quand l'authentification sera implémentée
+  @UseGuards(JwtAuthGuard)
   update(
     @Param('id') id: string,
     @Body() updateSkillDto: UpdateSkillDto,
-    @Request() req,
+    @GetUser() user: User,
   ) {
-    const userId = req.user?.id || 'temp-user-id';
-    return this.skillsService.update(id, updateSkillDto, userId);
+    return this.skillsService.update(id, updateSkillDto, user.id);
   }
 
   @Delete(':id')
-  // @UseGuards(JwtAuthGuard) // À décommenter quand l'authentification sera implémentée
-  delete(@Param('id') id: string, @Request() req) {
-    const userId = req.user?.id || 'temp-user-id';
-    return this.skillsService.delete(id, userId);
+  @UseGuards(JwtAuthGuard)
+  delete(@Param('id') id: string, @GetUser() user: User) {
+    return this.skillsService.delete(id, user.id);
   }
 }
