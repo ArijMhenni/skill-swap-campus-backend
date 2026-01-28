@@ -7,7 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { RequestStatus } from '../../common/enums/request-status.enum';
+import { RequestStatus } from '../../../common/enums/request-status.enum';
 import { User } from '../../users/entities/user.entity';
 import { Skill } from '../../skills/entities/skill.entity';
 
