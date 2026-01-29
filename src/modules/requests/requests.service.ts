@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SkillRequest } from './entities/request-skill.entity';
 import { RequestStatus } from '../../common/enums/request-status.enum';
+import { SkillType } from '../../common/enums/skill-type.enum';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { FilterRequestDto } from './dto/filter-request.dto';
 import { Skill } from '../skills/entities/skill.entity';
@@ -67,11 +68,25 @@ export class RequestsService {
 
     const saved = await this.requestRepository.save(request);
 
+    // Message différent selon le type de skill
+    let notificationTitle: string;
+    let notificationMessage: string;
+
+    if (skill.type === SkillType.OFFER) {
+      // Quelqu'un veut apprendre cette compétence
+      notificationTitle = 'Nouvelle demande d\'apprentissage';
+      notificationMessage = `Quelqu'un souhaite apprendre "${skill.title}" avec vous`;
+    } else {
+      // Quelqu'un propose son aide pour cette demande
+      notificationTitle = 'Proposition d\'aide reçue';
+      notificationMessage = `Quelqu'un propose de vous aider pour "${skill.title}"`;
+    }
+
     try {
       await this.notificationsService.create(
         skill.user.id,
-        'New Exchange Request',
-        `You have received a new request for "${skill.title}"`,
+        notificationTitle,
+        notificationMessage,
         saved.id,
       );
     } catch (error) {
