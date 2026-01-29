@@ -111,10 +111,10 @@ export class SkillsService {
   ): Promise<Skill> {
     const skill = await this.findOne(id);
 
-    // Vérifier que l'utilisateur est le propriétaire
+    // Defense-in-depth: Guard should prevent this, but validate anyway
     if (skill.user.id !== userId) {
       throw new ForbiddenException(
-        'You are not allowed to update this skill',
+        'Authorization check failed: You can only update your own skills',
       );
     }
 
@@ -154,10 +154,10 @@ export class SkillsService {
   async delete(id: string, userId: string): Promise<void> {
     const skill = await this.findOne(id);
 
-    // Vérifier que l'utilisateur est le propriétaire
+    // Defense-in-depth: Guard should prevent this, but validate anyway
     if (skill.user.id !== userId) {
       throw new ForbiddenException(
-        'You are not allowed to delete this skill',
+        'Authorization check failed: You can only delete your own skills',
       );
     }
 
