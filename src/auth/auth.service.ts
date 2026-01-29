@@ -101,7 +101,6 @@ export class AuthService {
     return user;
   }
 
-  // ✅ Forgot Password
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<{ message: string }> {
     const { email } = forgotPasswordDto;
 
@@ -129,7 +128,6 @@ export class AuthService {
     return { message: 'Si cet email existe, un lien de réinitialisation a été envoyé.' };
   }
 
-  // ✅ Reset Password
   async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<{ message: string }> {
     const { token, newPassword } = resetPasswordDto;
 
