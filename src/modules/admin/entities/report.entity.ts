@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ReportTargetType } from '../../../common/enums/report-target-type.enum';
 import { User } from '../../users/entities/user.entity';
+import { ReportStatus } from '../../../common/enums/report-status.enum';
 
 @Entity('reports')
 export class Report {
@@ -31,9 +33,22 @@ export class Report {
   @Column('text')
   reason: string;
 
-  @Column({ default: 'PENDING' })
-  status: string;
+  @Column({
+    type: 'enum',
+    enum: ReportStatus,
+    default: ReportStatus.PENDING,
+  })
+  status: ReportStatus;
+
+  @Column({ name: 'resolved_by', nullable: true })
+  resolvedBy?: string;
+
+  @Column({ type: 'text', nullable: true, name: 'admin_notes' })
+  adminNotes?: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 }
