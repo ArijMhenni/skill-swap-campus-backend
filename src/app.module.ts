@@ -8,7 +8,6 @@ import { ChatModule } from './modules/chat/chat.module';
 import { AuthModule } from './auth/auth.module';
 import { RequestsModule } from './modules/requests/requests.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
-import { SkillsModule } from './modules/skills/skills.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { BanCheckInterceptor } from './modules/admin/interceptors/ban-check.interceptor';
