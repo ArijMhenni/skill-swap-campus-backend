@@ -3,7 +3,6 @@ import { User } from './modules/users/entities/user.entity';
 import { Skill } from './modules/skills/entities/skill.entity';
 import { SkillRequest } from './modules/requests/entities/request-skill.entity';
 import { Rating } from './modules/ratings/entities/rating.entity';
-import { Message } from './modules/messages/entities/message.entity';
 import { Notification } from './modules/notifications/entities/notification.entity';
 import { Report } from './modules/admin/entities/report.entity';
 import { Role } from './common/enums/role.enum';
@@ -25,7 +24,7 @@ const AppDataSource = new DataSource({
   database: process.env.DB_DATABASE,
   synchronize: true,
   logging: false,
-  entities: [User, Skill, SkillRequest, Rating, Message, Notification, Report],
+  entities: [User, Skill, SkillRequest, Rating,  Notification, Report],
 });
 
 async function seed() {
@@ -36,7 +35,6 @@ async function seed() {
   const skillRepo = AppDataSource.getRepository(Skill);
   const requestRepo = AppDataSource.getRepository(SkillRequest);
   const ratingRepo = AppDataSource.getRepository(Rating);
-  const messageRepo = AppDataSource.getRepository(Message);
   const notificationRepo = AppDataSource.getRepository(Notification);
   const reportRepo = AppDataSource.getRepository(Report);
 
@@ -139,7 +137,7 @@ async function seed() {
   console.log('✅ Ratings seeded');
 
   // Messages
-  const messages = requests.map((request) => {
+ /* const messages = requests.map((request) => {
     return messageRepo.create({
       request: request as any,
       sender: request.requester,
@@ -150,7 +148,7 @@ async function seed() {
 
   await messageRepo.save(messages);
   console.log('✅ Messages seeded');
-
+*/
   // Notifications
   const notifications = allUsers.map((user) =>
     notificationRepo.create({
