@@ -2,7 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RequestsService } from './requests.service';
-import { Request, RequestStatus } from './entities/request.entity';
+import { SkillRequest } from './entities/request-skill.entity';
+import { RequestStatus } from '../../common/enums/request-status.enum';
 import { Skill } from '../skills/entities/skill.entity';
 import {
   BadRequestException,
@@ -12,7 +13,7 @@ import {
 
 describe('RequestsService', () => {
   let service: RequestsService;
-  let requestRepository: Repository<Request>;
+  let requestRepository: Repository<SkillRequest>;
   let skillRepository: Repository<Skill>;
 
   const mockRequestRepository = {
@@ -42,7 +43,7 @@ describe('RequestsService', () => {
     }).compile();
 
     service = module.get<RequestsService>(RequestsService);
-    requestRepository = module.get<Repository<Request>>(
+    requestRepository = module.get<Repository<SkillRequest>>(
       getRepositoryToken(Request),
     );
     skillRepository = module.get<Repository<Skill>>(

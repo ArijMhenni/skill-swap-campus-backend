@@ -1,6 +1,6 @@
 import { IsEnum, IsOptional } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { RequestStatus } from '../entities/request.entity';
+import { RequestStatus } from '../../../common/enums/request-status.enum';
 
 export class FilterRequestDto {
   @ApiPropertyOptional({

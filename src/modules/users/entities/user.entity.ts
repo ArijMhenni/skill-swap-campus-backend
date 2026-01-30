@@ -49,6 +49,9 @@ export class User {
   @Column({ type: 'text', nullable: true })
   availability: string;
 
+  @Column({ type: 'text', nullable: true })
+  avatar: string | null ;
+
   @Column({ name: 'is_banned', default: false })
   isBanned: boolean;
 
@@ -70,6 +73,12 @@ export class User {
 
   @OneToMany(()=>Message,messages=>messages.sender)
   messages:Message[];
+
+  @Column({ nullable: true })
+  resetPasswordToken?: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  resetPasswordExpires?: Date;
 
   // Relations
   // @OneToMany(() => Skill, (skill) => skill.user)

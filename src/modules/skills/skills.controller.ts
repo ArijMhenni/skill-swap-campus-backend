@@ -8,23 +8,38 @@ import {
   Delete,
   Query,
   UseGuards,
-  Request,
+  HttpCode,
+  HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { SkillsService } from './skills.service';
 import { CreateSkillDto } from './dto/create-skill.dto';
 import { UpdateSkillDto } from './dto/update-skill.dto';
 import { FilterSkillDto } from './dto/filter-skill.dto';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { ResourceOwnershipGuard } from '../../common/guards/resource-ownership.guard';
+import { CheckResourceOwnership } from '../../common/decorators/resource-ownership.decorator';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../users/entities/user.entity';
 
+/**
+ * Skills Controller
+ * 
+ * Handles all skill-related HTTP endpoints with proper authorization.
+ * 
+ * Authorization Strategy:
+ * - Public routes: GET /skills, GET /skills/:id (anyone can view)
+ * - Protected routes: POST (authenticated users only)
+ * - Owner-only routes: PATCH, DELETE (requires ownership verification)
+ */
 @Controller('skills')
 export class SkillsController {
   constructor(private readonly skillsService: SkillsService) {}
 
   @Post()
-  // @UseGuards(JwtAuthGuard) // À décommenter quand l'authentification sera implémentée
-  create(@Body() createSkillDto: CreateSkillDto, @Request() req) {
-    // Temporairement, on peut passer un userId fixe pour tester
-    const userId = req.user?.id || 'temp-user-id';
-    return this.skillsService.create(createSkillDto, userId);
+  @UseGuards(JwtAuthGuard)
+  create(@Body() createSkillDto: CreateSkillDto, @GetUser() user: User) {
+    return this.skillsService.create(createSkillDto, user.id);
   }
 
   @Get()
@@ -33,30 +48,50 @@ export class SkillsController {
   }
 
   @Get('user/:userId')
-  findByUser(@Param('userId') userId: string) {
+  findByUser(@Param('userId', ParseUUIDPipe) userId: string) {
     return this.skillsService.findByUser(userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  @HttpCode(HttpStatus.OK)
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.skillsService.findOne(id);
   }
-
+/**
+   * Update a skill (Owner only)
+   * 
+   * Security: 
+   * - JwtAuthGuard: Validates user authentication
+   * - ResourceOwnershipGuard: Verifies user owns the skill
+   * - ParseUUIDPipe: Validates ID format
+   */
   @Patch(':id')
-  // @UseGuards(JwtAuthGuard) // À décommenter quand l'authentification sera implémentée
+  @UseGuards(JwtAuthGuard, ResourceOwnershipGuard)
+  @CheckResourceOwnership('skill')
+  @HttpCode(HttpStatus.OK)
   update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateSkillDto: UpdateSkillDto,
-    @Request() req,
+    @GetUser() user: User,
   ) {
-    const userId = req.user?.id || 'temp-user-id';
-    return this.skillsService.update(id, updateSkillDto, userId);
+    return this.skillsService.update(id, updateSkillDto, user.id);
   }
 
+  /**
+   * Delete a skill (Owner only)
+   * 
+   * Security:
+   * - JwtAuthGuard: Validates user authentication
+   * - ResourceOwnershipGuard: Verifies user owns the skill
+   * - ParseUUIDPipe: Validates ID format
+   * 
+   * Note: Performs soft delete (sets status to DELETED)
+   */
   @Delete(':id')
-  // @UseGuards(JwtAuthGuard) // À décommenter quand l'authentification sera implémentée
-  delete(@Param('id') id: string, @Request() req) {
-    const userId = req.user?.id || 'temp-user-id';
-    return this.skillsService.delete(id, userId);
+  @UseGuards(JwtAuthGuard, ResourceOwnershipGuard)
+  @CheckResourceOwnership('skill')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param('id', ParseUUIDPipe) id: string, @GetUser() user: User) {
+    return this.skillsService.delete(id, user.id);
   }
 }

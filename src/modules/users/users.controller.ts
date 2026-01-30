@@ -29,7 +29,8 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Returns current user' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   getProfile(@GetUser() user: User) {
-    return user;
+    // Recharger l'utilisateur depuis la base de données pour obtenir les données les plus récentes
+    return this.usersService.findById(user.id);
   }
 
   @Get('findByFirstname')
@@ -47,6 +48,13 @@ export class UsersController {
     @GetUser() user: User,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
+    console.log('PATCH /users/me - Received data:', {
+      ...updateProfileDto,
+      avatar: updateProfileDto.avatar 
+        ? (updateProfileDto.avatar === null ? 'NULL' : 'BASE64 STRING') 
+        : 'UNDEFINED'
+    });
+    
     return this.usersService.updateProfile(user.id, updateProfileDto);
   }
 

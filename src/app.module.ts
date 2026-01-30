@@ -3,10 +3,19 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getDatabaseConfig } from './config/database.config';
 import { UsersModule } from './modules/users/users.module';
+<<<<<<< HEAD
 import { SkillsModule } from './modules/skills/skills.module';
 import { ChatModule } from './modules/chat/chat.module';
+=======
+>>>>>>> ef0d4683c488dfaa7817f17302ca3bc630b5e0b9
 import { AuthModule } from './auth/auth.module';
-import { RequestsModule } from './requests/requests.module';
+import { RequestsModule } from './modules/requests/requests.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { SkillsModule } from './modules/skills/skills.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { BanCheckInterceptor } from './modules/admin/interceptors/ban-check.interceptor';
+import { ReportsModule } from './modules/reports/reports.module';
 
 @Module({
   imports: [
@@ -19,10 +28,20 @@ import { RequestsModule } from './requests/requests.module';
       useFactory: getDatabaseConfig,
     }),
     UsersModule,
+    AdminModule,
     SkillsModule,
     AuthModule,
     RequestsModule,
     ChatModule,
+    NotificationsModule,
+    ReportsModule,
+  ],
+  providers: [
+    // ... vos autres providers
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: BanCheckInterceptor, // ⬅️ Ajouter ceci
+    },
   ],
 })
 export class AppModule {}

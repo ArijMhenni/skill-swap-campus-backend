@@ -29,9 +29,9 @@ async function bootstrap() {
   const port = configService.get('PORT') || 3000;
   await app.listen(port);
 
-  console.log(`\n🚀 Application is running on: http://localhost:${port}`);
-  console.log(`📚 Swagger docs available at: http://localhost:${port}/api/docs`);
-  console.log(`🗄️  Database: ${configService.get('DB_DATABASE')} on ${configService.get('DB_HOST')}:${configService.get('DB_PORT')}`);
+  console.log(`\nApplication is running on: http://localhost:${port}`);
+  console.log(`Swagger docs available at: http://localhost:${port}/api/docs`);
+  console.log(`Database: ${configService.get('DB_DATABASE')} on ${configService.get('DB_HOST')}:${configService.get('DB_PORT')}`);
   console.log(`🌍 CORS enabled for: ${configService.get('CORS_ORIGIN')}\n`);
 }
 bootstrap();
