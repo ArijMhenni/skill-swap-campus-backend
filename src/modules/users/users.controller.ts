@@ -4,6 +4,7 @@ import {
   Patch,
   Body,
   Param,
+  Query,
   UseGuards,
   ClassSerializerInterceptor,
   UseInterceptors,
@@ -31,6 +32,11 @@ export class UsersController {
     return user;
   }
 
+  @Get('findByFirstname')
+  async findUserByFirstname(@Query('firstName') firstName:string){
+    return this.usersService.findAllByFirstName(firstName);
+  }
+
   @Patch('me')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT-auth')
@@ -51,4 +57,11 @@ export class UsersController {
   getUserById(@Param('id') id: string) {
     return this.usersService.findById(id);
   }
+
+  @Get()
+@ApiOperation({ summary: 'Get all users' })
+@ApiResponse({ status: 200, description: 'Returns all users' })
+async getAllUsers() {
+  return this.usersService.findAll();
+}
 }

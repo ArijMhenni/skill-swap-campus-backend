@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { getDatabaseConfig } from './config/database.config';
 import { UsersModule } from './modules/users/users.module';
 import { SkillsModule } from './modules/skills/skills.module';
+import { ChatModule } from './modules/chat/chat.module';
 import { AuthModule } from './auth/auth.module';
 import { RequestsModule } from './requests/requests.module';
 
@@ -21,6 +22,7 @@ import { RequestsModule } from './requests/requests.module';
     SkillsModule,
     AuthModule,
     RequestsModule,
+    ChatModule,
   ],
 })
 export class AppModule {}

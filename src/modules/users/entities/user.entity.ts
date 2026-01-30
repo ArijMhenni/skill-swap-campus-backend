@@ -5,9 +5,14 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToMany,
 } from 'typeorm';
 import { Role } from '../../../common/enums/role.enum';
 import { Exclude } from 'class-transformer';
+import { Room } from 'src/modules/chat/entities/room.entity';
+import { ConnectedUser } from 'src/modules/chat/entities/connected-user.entity';
+import { JoinedRoom } from 'src/modules/chat/entities/joined-room.entity';
+import { Message } from 'src/modules/chat/entities/message.entity';
 
 @Entity('users')
 export class User {
@@ -52,6 +57,19 @@ export class User {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+  
+  @ManyToMany(()=>Room,room=> room.participants)
+  rooms:Room[];
+
+  @OneToMany(()=>ConnectedUser,connections=>connections.user)
+  connections:ConnectedUser[];
+
+
+  @OneToMany(()=> JoinedRoom,joinedrooms=>joinedrooms.user)
+  joinedRooms:JoinedRoom[];
+
+  @OneToMany(()=>Message,messages=>messages.sender)
+  messages:Message[];
 
   // Relations
   // @OneToMany(() => Skill, (skill) => skill.user)

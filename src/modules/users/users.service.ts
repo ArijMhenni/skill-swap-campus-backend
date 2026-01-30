@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository,Like } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UpdateProfileDto } from '../../auth/dto/update-profile.dto';
+import { first } from 'rxjs';
 
 @Injectable()
 export class UsersService {
@@ -21,6 +22,14 @@ export class UsersService {
     return user;
   }
 
+  async findAllByFirstName(firstName: string): Promise<User[]> {
+    return this.userRepository.find({
+      where: {
+        firstName: Like(`%${firstName}%`)
+      }
+    })
+  }
+
   async updateProfile(id: string, updateProfileDto: UpdateProfileDto): Promise<User> {
     const user = await this.findById(id);
 
@@ -28,4 +37,8 @@ export class UsersService {
 
     return this.userRepository.save(user);
   }
+
+  async findAll() {
+  return this.userRepository.find(); 
+}
 }

@@ -4,12 +4,8 @@ import { ConfigService } from '@nestjs/config';
 export const getDatabaseConfig = (
   configService: ConfigService,
 ): TypeOrmModuleOptions => ({
+  url: configService.get<string>('DATABASE_URL'),
   type: 'mysql',
-  host: configService.get('DB_HOST'),
-  port: configService.get<number>('DB_PORT'),
-  username: configService.get('DB_USERNAME'),
-  password: configService.get('DB_PASSWORD') || '',
-  database: configService.get('DB_DATABASE'),
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
     synchronize: true,        // force sync
   
