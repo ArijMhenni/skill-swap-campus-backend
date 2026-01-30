@@ -3,11 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getDatabaseConfig } from './config/database.config';
 import { UsersModule } from './modules/users/users.module';
-<<<<<<< HEAD
 import { SkillsModule } from './modules/skills/skills.module';
 import { ChatModule } from './modules/chat/chat.module';
-=======
->>>>>>> ef0d4683c488dfaa7817f17302ca3bc630b5e0b9
 import { AuthModule } from './auth/auth.module';
 import { RequestsModule } from './modules/requests/requests.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
