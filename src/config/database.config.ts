@@ -11,8 +11,7 @@ export const getDatabaseConfig = (
   password: configService.get('DB_PASSWORD') || '',
   database: configService.get('DB_DATABASE'),
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-    synchronize: true,        // force sync
-  
+  synchronize: true, // force sync
   logging: true,
   charset: 'utf8mb4',
   timezone: '+00:00',
