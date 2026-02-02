@@ -74,7 +74,7 @@ export class User {
   @OneToMany(()=>Message,messages=>messages.sender)
   messages:Message[];
 
-  @Column({ nullable: true })
+  @Column({ type: 'text',nullable: true })
   resetPasswordToken?: string;
 
   @Column({ type: 'timestamp', nullable: true })

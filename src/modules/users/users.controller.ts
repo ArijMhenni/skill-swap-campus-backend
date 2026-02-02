@@ -44,19 +44,18 @@ export class UsersController {
   @ApiOperation({ summary: 'Update current user profile' })
   @ApiResponse({ status: 200, description: 'Profile updated successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  updateProfile(
-    @GetUser() user: User,
-    @Body() updateProfileDto: UpdateProfileDto,
-  ) {
-    console.log('PATCH /users/me - Received data:', {
-      ...updateProfileDto,
-      avatar: updateProfileDto.avatar 
-        ? (updateProfileDto.avatar === null ? 'NULL' : 'BASE64 STRING') 
-        : 'UNDEFINED'
-    });
-    
-    return this.usersService.updateProfile(user.id, updateProfileDto);
-  }
+updateProfile(
+  @GetUser() user: User,
+  @Body() updateProfileDto: UpdateProfileDto,
+) {
+  console.log('🔍 RAW DTO KEYS:', Object.keys(updateProfileDto));
+  console.log('🔍 RAW DTO VALUES:', updateProfileDto);
+  console.log('🔍 "avatar" in DTO?', 'avatar' in updateProfileDto);
+  console.log('🔍 avatar value:', updateProfileDto.avatar);
+  console.log('🔍 avatar === undefined?', updateProfileDto.avatar === undefined);
+  
+  return this.usersService.updateProfile(user.id, updateProfileDto);
+}
 
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID (public)' })

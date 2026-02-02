@@ -103,6 +103,7 @@ export class AuthService {
 
    verifyJwt(jwt: string): Promise<any> {
     return this.jwtService.verifyAsync(jwt);}
+    
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<{ message: string }> {
     const { email } = forgotPasswordDto;
 
