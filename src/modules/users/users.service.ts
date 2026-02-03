@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository,Like } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UpdateProfileDto } from '../../auth/dto/update-profile.dto';
-import { first } from 'rxjs';
 
 @Injectable()
 export class UsersService {
@@ -27,7 +26,7 @@ export class UsersService {
       where: {
         firstName: Like(`%${firstName}%`)
       }
-    })
+    });
   }
 
 async updateProfile(id: string, updateProfileDto: UpdateProfileDto): Promise<User> {
@@ -50,10 +49,9 @@ async updateProfile(id: string, updateProfileDto: UpdateProfileDto): Promise<Use
     user.wantedSkills = updateProfileDto.wantedSkills;
   }
   
-  // Special handling for avatar
+  // debugging avatar updates
   if ('avatar' in updateProfileDto) {
-    // Only set avatar if it's a valid base64 string, otherwise set to null
-    // Don't update if avatar is undefined
+   // not updating avatar unless explicitly provided
     if (updateProfileDto.avatar === null || updateProfileDto.avatar === '') {
       user.avatar = null;
       console.log('🔄 Avatar explicitly removed');
@@ -61,7 +59,6 @@ async updateProfile(id: string, updateProfileDto: UpdateProfileDto): Promise<Use
       user.avatar = updateProfileDto.avatar;
       console.log('🔄 Avatar updated with new image');
     }
-    // If undefined, don't touch it - but since we're checking 'in', this shouldn't happen
   }
 
   const savedUser = await this.userRepository.save(user);

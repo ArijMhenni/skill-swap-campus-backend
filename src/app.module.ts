@@ -12,7 +12,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { BanCheckInterceptor } from './modules/admin/interceptors/ban-check.interceptor';
 import { ReportsModule } from './modules/reports/reports.module';
-
+import { RatingsModule } from './modules/ratings/ratings.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,12 +31,12 @@ import { ReportsModule } from './modules/reports/reports.module';
     ChatModule,
     NotificationsModule,
     ReportsModule,
+    RatingsModule, 
   ],
   providers: [
-    // ... vos autres providers
     {
       provide: APP_INTERCEPTOR,
-      useClass: BanCheckInterceptor, // ⬅️ Ajouter ceci
+      useClass: BanCheckInterceptor, 
     },
   ],
 })

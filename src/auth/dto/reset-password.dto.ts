@@ -6,6 +6,7 @@ export class ResetPasswordDto {
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
     description: 'Reset token from email',
   })
+  
   @IsString()
   @IsNotEmpty()
   token: string;
