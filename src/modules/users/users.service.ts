@@ -61,6 +61,7 @@ async updateProfile(id: string, updateProfileDto: UpdateProfileDto): Promise<Use
     }
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
     const savedUser = await this.userRepository.save(user);
     console.log(' User saved - Avatar is:', savedUser.avatar === null ? 'NULL' : 'SET');
@@ -77,6 +78,8 @@ async findAll() {
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
   }
 
   const savedUser = await this.userRepository.save(user);
@@ -89,6 +92,9 @@ async findAll() {
   return this.userRepository.find(); 
 }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
