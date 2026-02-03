@@ -59,6 +59,7 @@ async updateProfile(id: string, updateProfileDto: UpdateProfileDto): Promise<Use
       user.avatar = updateProfileDto.avatar;
       console.log('🔄 Avatar updated with new image');
     }
+<<<<<<< Updated upstream
   }
 
   const savedUser = await this.userRepository.save(user);
@@ -71,3 +72,16 @@ async updateProfile(id: string, updateProfileDto: UpdateProfileDto): Promise<Use
   return this.userRepository.find(); 
 }
 }
+=======
+
+    const savedUser = await this.userRepository.save(user);
+    console.log('✅ User saved - Avatar is:', savedUser.avatar === null ? 'NULL' : 'SET');
+    
+    return savedUser;
+  }
+
+  async findAll() {
+    return this.userRepository.find(); 
+  }
+}
+>>>>>>> Stashed changes

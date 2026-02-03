@@ -22,16 +22,6 @@ import { CheckResourceOwnership } from '../../common/decorators/resource-ownersh
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { User } from '../users/entities/user.entity';
 
-/**
- * Skills Controller
- * 
- * Handles all skill-related HTTP endpoints with proper authorization.
- * 
- * Authorization Strategy:
- * - Public routes: GET /skills, GET /skills/:id (anyone can view)
- * - Protected routes: POST (authenticated users only)
- * - Owner-only routes: PATCH, DELETE (requires ownership verification)
- */
 @Controller('skills')
 export class SkillsController {
   constructor(private readonly skillsService: SkillsService) {}
@@ -57,14 +47,7 @@ export class SkillsController {
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.skillsService.findOne(id);
   }
-/**
-   * Update a skill (Owner only)
-   * 
-   * Security: 
-   * - JwtAuthGuard: Validates user authentication
-   * - ResourceOwnershipGuard: Verifies user owns the skill
-   * - ParseUUIDPipe: Validates ID format
-   */
+
   @Patch(':id')
   @UseGuards(JwtAuthGuard, ResourceOwnershipGuard)
   @CheckResourceOwnership('skill')
@@ -77,16 +60,6 @@ export class SkillsController {
     return this.skillsService.update(id, updateSkillDto, user.id);
   }
 
-  /**
-   * Delete a skill (Owner only)
-   * 
-   * Security:
-   * - JwtAuthGuard: Validates user authentication
-   * - ResourceOwnershipGuard: Verifies user owns the skill
-   * - ParseUUIDPipe: Validates ID format
-   * 
-   * Note: Performs soft delete (sets status to DELETED)
-   */
   @Delete(':id')
   @UseGuards(JwtAuthGuard, ResourceOwnershipGuard)
   @CheckResourceOwnership('skill')
