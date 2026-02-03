@@ -68,7 +68,10 @@ async updateProfile(id: string, updateProfileDto: UpdateProfileDto): Promise<Use
     return savedUser;
   }
 
-  async findAll() {
+  return this.userRepository.save(user);
+}
+
+async findAll() {
     return this.userRepository.find(); 
   }
 =======
