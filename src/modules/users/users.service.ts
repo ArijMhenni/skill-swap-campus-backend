@@ -54,28 +54,14 @@ async updateProfile(id: string, updateProfileDto: UpdateProfileDto): Promise<Use
    // not updating avatar unless explicitly provided
     if (updateProfileDto.avatar === null || updateProfileDto.avatar === '') {
       user.avatar = null;
-      console.log('🔄 Avatar explicitly removed');
+      console.log(' Avatar explicitly removed');
     } else if (updateProfileDto.avatar) {
       user.avatar = updateProfileDto.avatar;
-      console.log('🔄 Avatar updated with new image');
+      console.log(' Avatar updated with new image');
     }
-<<<<<<< Updated upstream
-  }
-
-  const savedUser = await this.userRepository.save(user);
-  console.log('✅ User saved');
-  
-  return savedUser;
-}
-
-  async findAll() {
-  return this.userRepository.find(); 
-}
-}
-=======
 
     const savedUser = await this.userRepository.save(user);
-    console.log('✅ User saved - Avatar is:', savedUser.avatar === null ? 'NULL' : 'SET');
+    console.log(' User saved - Avatar is:', savedUser.avatar === null ? 'NULL' : 'SET');
     
     return savedUser;
   }
@@ -84,4 +70,3 @@ async updateProfile(id: string, updateProfileDto: UpdateProfileDto): Promise<Use
     return this.userRepository.find(); 
   }
 }
->>>>>>> Stashed changes
